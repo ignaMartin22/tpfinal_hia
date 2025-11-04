@@ -1,0 +1,83 @@
+<div class="container py-5">
+  <div class="row">
+    <!-- Columna Formulario de Checkout -->
+    <div class="col-md-7 form-checkout">
+      <div class="whatsapp-banner mb-4">
+        <span class="whatsapp-banner__icon">
+          <i class="fab fa-whatsapp"></i>
+        </span>
+        <div class="whatsapp-banner__text">
+          <h2 class="mb-2">Para continuar tocá el botón para redirigirte al whatsapp de OversizeX</h2>
+          <p class="mb-1"><strong>Confirma el pago con un encargado de ventas a través de WhatsApp.</strong></p>
+          <p class="mb-0"><strong>Se enviará un mensaje con un resumen de tu pedido!</strong></p>
+        </div>
+        <button class="whatsapp-banner__button"><i class="fab fa-whatsapp"></i> Contactar por WhatsApp</button>
+      </div>
+
+    </div>
+
+    <!-- Columna Resumen Carrito -->
+    <div class="col-md-5">
+      <div class="card">
+        <div class="card-header">
+          <h4>Resumen del pedido</h4>
+        </div>
+        <div class="card-body">
+          @if (cartItems.length === 0) {
+            <div class="empty-cart text-center py-4">
+              <svg width="120" height="120" viewBox="0 0 24 24">
+                <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" fill="#ccc"/>
+              </svg>
+              <h5 class="mt-3">Tu carrito está vacío</h5>
+              <p class="text-muted">¡Agrega algunos productos increíbles!</p>
+              <button (click)="irATienda()" class="btn btn-primary">Ver productos</button>
+            </div>
+          } @else {
+            <div class="cart-items">
+              @for (item of cartItems; track trackByItem($index, item)) {
+                <div class="d-flex mb-3 border-bottom pb-3">
+                  <div class="me-3">
+                    @if (item.producto.imagenes && item.producto.imagenes.length > 0) {
+                      <img [src]="item.producto.imagenes[0]" alt="{{item.producto.nombre}}" class="img-thumbnail" style="width: 80px; height: 80px; object-fit: cover;">
+                    } @else {
+                      <div class="placeholder-img" style="width: 80px; height: 80px; background-color: #f0f0f0; display: flex; align-items: center; justify-content: center;">
+                        <span class="text-muted">Sin imagen</span>
+                      </div>
+                    }
+                  </div>
+                  <div class="flex-grow-1">
+                    <h5 class="mb-1">{{item.producto.nombre}}</h5>
+                    <p class="mb-1 text-muted small">{{item.cantidad}} x {{formatearMoneda(item.producto.precio)}}</p>
+                    <p class="text-end mb-0"><strong>{{formatearMoneda(item.producto.precio * item.cantidad)}}</strong></p>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+          <!-- Totales -->
+          <div class="mt-4">
+            <div class="d-flex justify-content-between mb-2">
+              <span>Subtotal</span>
+              <span>{{formatearMoneda(subtotal)}}</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+              <span>Envío</span>
+              <span>{{shipping}}</span>
+            </div>
+            @if (descuento > 0) {
+              <div class="d-flex justify-content-between mb-2 text-success">
+                <span>Descuento ({{descuentoPorcentaje}}%)</span>
+                <span>-{{formatearMoneda(descuento)}}</span>
+              </div>
+            }
+            <div class="d-flex justify-content-between mt-3 border-top pt-3">
+              <span class="fw-bold">Total</span>
+              <span class="fw-bold">{{formatearMoneda(total)}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

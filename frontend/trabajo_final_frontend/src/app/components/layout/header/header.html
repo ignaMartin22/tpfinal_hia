@@ -1,0 +1,153 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container-lg">
+    <a class="navbar-brand me-auto" href="#">
+      <img src="assets/logo-removebg.png" alt="logo" class="logo-img" />
+    </a>
+    <div
+      class="offcanvas offcanvas-end"
+      tabindex="-1"
+      id="offcanvasNavbar"
+      aria-labelledby="offcanvasNavbarLabel"
+    >
+      <div class="offcanvas-header">
+        <img src="assets/logo-removebg.png" alt="logo" class="logo-img" />
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="offcanvas"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="offcanvas-body">
+        <ul class="navbar-nav justify-content-center flex-grow-1 pe-3">
+          <li class="nav-item">
+            <a class="nav-link" routerLinkActive="active" [routerLink]="['/home']">Inicio</a>
+          </li>
+          <li class="nav-item dropdown hover-dropdown">
+            <a
+            routerLinkActive="active"
+              class="nav-link dropdown-toggle mx-lg-2"
+              [routerLink]="['/product-list']"
+              id="tiendaDropdown"
+              role="button"
+              >Tienda</a
+            >
+            <!--
+            <ul class="dropdown-menu custom-dropdown">
+              @for (categoria of categorias; track $index) {
+                <li>
+                  <a
+                    class="dropdown-item"
+                    [routerLink]="['/products', categoria.nombre]"
+                  >
+                    {{ categoria.nombre | uppercase }}
+                  </a>
+                </li>
+              }
+            </ul>-->
+          </li>
+          <li class="nav-item">
+            <a routerLinkActive="active" class="nav-link mx-lg-2" [routerLink]="['/contact']">Contacto</a>
+          </li>
+          <li class="nav-item">
+            <a routerLinkActive="active" class="nav-link mx-lg-2" [routerLink]="['/policy']">Políticas</a>
+          </li>
+          <li *ngIf="rol === 'administrador'" class="nav-item">
+            <button id="adminBtn" class="admin-btn" (click)="irADashboard()">
+              Administrar
+            </button>
+          </li>
+          <!-- Botón de carrito -->
+          <li class="nav-item d-flex align-items-center">
+            <button
+              type="button"
+              class="btn position-relative me-2"
+              style="background: none; border: none; box-shadow: none"
+              (click)="abrirCarrito()"
+              aria-label="Abrir carrito"
+            >
+              <i class="fas fa-shopping-cart fa-lg" style="color: #15a4c0"></i>
+              <span
+                *ngIf="cartItemsCount && cartItemsCount > 0"
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                style="font-size: 0.7rem"
+              >
+                {{ cartItemsCount }}
+              </span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!-- Acceso -->
+    <button
+      *ngIf="!userLogged()"
+      class="login-button"
+      (click)="irAFormulario()"
+    >
+      Acceder
+    </button>
+    <!-- Usuario Logueado -->
+    <div *ngIf="userLogged()" class="user-dropdown">
+      <div
+        class="user-avatar-container"
+        (click)="mostrarMenu = !mostrarMenu"
+        style="cursor: pointer"
+      >
+        <img
+          [src]="imagen"
+          alt="img_user"
+          width="55"
+          height="55"
+          class="rounded-circle user-avatar"
+        />
+      </div>
+      <div class="user-menu" *ngIf="mostrarMenu">
+        <div class="user-info text-center py-2 px-3">
+          <img
+            [src]="imagen"
+            alt="img_user"
+            width="60"
+            height="60"
+            class="rounded-circle mb-2"
+          />
+          <div class="fw-bold">{{ username }}</div>
+          <div class="text-muted" style="font-size: 0.95em">{{ email }}</div>
+        </div>
+        <hr class="my-1" />
+        <button
+          class="dropdown-item text-start"
+          type="button"
+          (click)="configurarCuenta()"
+        >
+          <i class="fa-solid fa-gear me-1"></i> Configuración
+        </button>
+        <button
+          class="dropdown-item text-danger text-start"
+          type="button"
+          (click)="logout()"
+        >
+          <i class="fa-solid fa-right-from-bracket me-1"></i> Cerrar Sesión
+        </button>
+      </div>
+    </div>
+    <button
+      class="navbar-toggler pe-0"
+      type="button"
+      data-bs-toggle="offcanvas"
+      data-bs-target="#offcanvasNavbar"
+      aria-controls="offcanvasNavbar"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+  </div>
+</nav>
+
+<app-add-to-cart
+  [isVisible]="showCartModal"
+  (modalClosed)="showCartModal = false">
+</app-add-to-cart>
+

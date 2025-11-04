@@ -1,0 +1,45 @@
+/* dashboard.css */
+
+.dashboard-charts-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2 columnas fijas */
+  grid-template-rows: auto auto;  /* 2 filas automáticas */
+  gap: 32px;
+  margin-top: 32px;
+  align-items: start;
+}
+
+.dashboard-chart-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,188,212,0.07);
+  padding: 24px 18px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.dashboard-chart-card h3 {
+  font-size: 1.15rem;
+  color: #0097a7;
+  margin-bottom: 18px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.dashboard-chart-card canvas {
+  max-width: 100% !important;
+  height: 260px !important;
+}
+
+@media (max-width: 900px) {
+  .dashboard-charts-container {
+    grid-template-columns: 1fr; /* 1 columna en pantallas pequeñas */
+    grid-template-rows: none;
+    gap: 24px;
+  }
+  .dashboard-chart-card canvas {
+    height: 220px !important;
+  }
+}

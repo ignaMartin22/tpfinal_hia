@@ -1,0 +1,248 @@
+<div class="container-fluid p-4">
+  <!-- Solo mostrar contenido si el producto está cargado -->
+  @if (isProductLoaded) {
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a [routerLink]="['/tienda']" class="text-decoration-none">Tienda</a>
+      </li>
+      <li class="breadcrumb-item">
+        <a [routerLink]="['/products', getCategoryName()]" class="text-decoration-none">{{ getCategoryName() }}</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        {{ productName }}
+      </li>
+    </ol>
+    </nav>
+
+    <div class="row g-4">
+      <!-- Sección de imágenes -->
+      <div class="col-lg-7">
+        <div class="row">
+          <!-- Miniaturas -->
+          <div class="col-2">
+            <div class="d-flex flex-column gap-2" [class.opacity-100]="imagesInView">
+              @for (thumbnail of thumbnails; track $index) {
+                <img
+                  [src]="thumbnail.src"
+                  [alt]="thumbnail.alt"
+                  class="img-thumbnail rounded cursor-pointer"
+                  [class.border-dark]="$index === activeThumbnailIndex"
+                  (click)="selectThumbnail($index)">
+              }
+            </div>
+          </div>
+
+          <!-- Imagen principal -->
+          <div class="col-10">
+            <div class="position-relative overflow-hidden rounded">
+              @for (image of mainImages; track $index) {
+                <img
+                  [src]="image"
+                  [alt]="productName"
+                  class="img-fluid rounded shadow-sm"
+                  [class.d-block]="$index === activeThumbnailIndex"
+                  [class.d-none]="$index !== activeThumbnailIndex">
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detalles del producto -->
+      <div class="col-lg-5">
+        <div class="ps-lg-4">
+          <!-- Título del producto -->
+          <h1 class="display-4 fw-bold mb-3">{{ productName }}</h1>
+
+          <!-- Precio y información de stock -->
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="fs-3 fw-bold">${{ productPrice }}</div>
+            @if (selectedSize) {
+              <div class="text-muted small">
+                {{ stockInfo }}
+              </div>
+            }
+          </div>
+
+          <!-- Color -->
+          @if (hasColor()) {
+            <div class="mb-3">
+              <span class="fw-bold">Color: </span>
+              <span>{{ currentProduct!.color }}</span>
+            </div>
+          }
+
+          <!-- Selección de tallas -->
+          <div class="mb-4">
+            <h6 class="fw-bold mb-2">Talla:</h6>
+            <div class="btn-group" role="group" aria-label="Size selection">
+              @for (size of sizes; track size) {
+                <button
+                  type="button"
+                  class="btn"
+                  [class.btn-dark]="size === selectedSize"
+                  [class.btn-outline-dark]="size !== selectedSize"
+                  (click)="selectSize(size)">
+                  {{ size }}
+                </button>
+              }
+            </div>
+            @if (sizes.length === 0) {
+              <div class="text-muted small mt-1">
+                No hay tallas disponibles
+              </div>
+            }
+          </div>
+
+          <!-- Botones de compra -->
+          <div class="d-flex gap-2 mb-4">
+            <button
+              class="btn btn-primary flex-grow-1 text-white fw-bold py-2"
+              (click)="addToBag()"
+              [disabled]="!isButtonEnabled">
+              {{ !hasStock ? 'SIN STOCK' : 'AGREGAR AL CARRITO' }}
+            </button>
+          </div>
+
+          <!-- SKU del producto -->
+          <div class="text-muted small mb-4">
+            Product SKU: {{ productSku }}
+          </div>
+
+          <!-- Descripción del producto -->
+          @if (hasDescription()) {
+            <div class="mb-4">
+              <h6 class="fw-bold">Descripción:</h6>
+              <p>{{ currentProduct!.descripcion }}</p>
+            </div>
+          }
+
+          <!-- Información de stock total -->
+          @if (hasStockTotal()) {
+            <div class="text-muted small mb-4">
+              Stock total disponible: {{ stockTotal }} unidades
+            </div>
+          }
+
+          <!-- Acordeón de información adicional -->
+          <div class="accordion" id="productAccordion">
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDetails">
+                  <i class="bi bi-info-circle me-2"></i>
+                  Detalles del Producto
+                </button>
+              </h2>
+              <div id="collapseDetails" class="accordion-collapse collapse" data-bs-parent="#productAccordion">
+                <div class="accordion-body">
+                  <ul class="list-unstyled">
+                    <li><strong>Material:</strong> 100% Algodón premium</li>
+                    <li><strong>Cuidado:</strong> Lavar a máquina, agua fría</li>
+                    <li><strong>Origen:</strong> Fabricado responsablemente</li>
+                    @if (hasColor()) {
+                      <li><strong>Color:</strong> {{ currentProduct!.color }}</li>
+                    }
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseShipping">
+                  <i class="bi bi-truck me-2"></i>
+                  Envío y Devoluciones
+                </button>
+              </h2>
+              <div id="collapseShipping" class="accordion-collapse collapse" data-bs-parent="#productAccordion">
+                <div class="accordion-body">
+                  <ul class="list-unstyled">
+                    <li><strong>Envío gratis</strong> en pedidos superiores a $50</li>
+                    <li><strong>Entrega:</strong> 2-5 días hábiles</li>
+                    <li><strong>Devoluciones:</strong> 30 días sin preguntas</li>
+                    <li><strong>Cambios:</strong> Gratis en la primera vez</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            @if (hasTallas()) {
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSizing">
+                    <i class="bi bi-rulers me-2"></i>
+                    Guía de Tallas
+                  </button>
+                </h2>
+                <div id="collapseSizing" class="accordion-collapse collapse" data-bs-parent="#productAccordion">
+                  <div class="accordion-body">
+                    <div class="table-responsive">
+                      <table class="table table-sm">
+                        <thead>
+                          <tr>
+                            <th>Talla</th>
+                            <th>Pecho (cm)</th>
+                            <th>Cintura (cm)</th>
+                            <th>Stock</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @for (talla of currentProduct!.tallas; track talla.talla) {
+                            <tr>
+                              <td><strong>{{ talla.talla }}</strong></td>
+                              <td>{{ getTallaInfo(talla.talla, 'pecho') }}</td>
+                              <td>{{ getTallaInfo(talla.talla, 'cintura') }}</td>
+                              <td>
+                                <span class="badge"
+                                      [class.bg-success]="talla.stock > 5"
+                                      [class.bg-warning]="talla.stock > 0 && talla.stock <= 5"
+                                      [class.bg-danger]="talla.stock === 0">
+                                  {{ talla.stock }}
+                                </span>
+                              </td>
+                            </tr>
+                          }
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Sección de recomendados -->
+    <div class="mt-5">
+      <h3 class="mb-4 fw-bold">Recomendados para ti</h3>
+      <div class="row g-4">
+        @for (product of recommendedProducts; track product._id) {
+          <div class="col-6 col-md-3">
+            <div class="card h-100 product-card">
+              <a [routerLink]="['/product-detail', product._id]" class="text-decoration-none">
+                <img [src]="product.imagenes[0]" [alt]="product.nombre" class="card-img-top product-image" style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                  <h5 class="card-title product-name">{{ product.nombre }}</h5>
+                  <p class="card-text product-price">${{ product.precio }}</p>
+                </div>
+              </a>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <!-- Estado de carga -->
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 50vh;">
+      <div class="text-center">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-3 text-muted">Cargando producto...</p>
+      </div>
+    </div>
+  }
+</div>
