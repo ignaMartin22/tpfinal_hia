@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map, catchError, of, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 
@@ -28,12 +28,17 @@ export interface ProductoResponse {
   msg: string;
   productos: Producto[];
 }
+export interface PaginacionRespuesta {
+  items: Producto[];
+  total: number;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductoService {
   private API_URL = environment.apiUrl;
+  private baseUrl = '/api'; // ajustar según tu configuración
   valorBusqueda = '';
 
   constructor(private http: HttpClient) { }
@@ -91,5 +96,14 @@ actualizarProducto(id: string, producto: FormData): Observable<Producto> {
           return of([]);
         })
       );
+  }
+
+  obtenerProductosPaginados(page: number, limit: number, q?: string): Observable<PaginacionRespuesta> {
+    let params = new HttpParams()
+      .set('page', String(page))
+      .set('limit', String(limit));
+    if (q) params = params.set('q', q);
+
+    return this.http.get<PaginacionRespuesta>(`${this.baseUrl}/productos`, { params });
   }
 }
