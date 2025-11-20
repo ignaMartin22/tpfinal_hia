@@ -104,6 +104,6 @@ actualizarProducto(id: string, producto: FormData): Observable<Producto> {
       .set('limit', String(limit));
     if (q) params = params.set('q', q);
 
-    return this.http.get<PaginacionRespuesta>(`${this.baseUrl}/productos`, { params });
+    return this.http.get<PaginacionRespuesta>(`${this.baseUrl}/producto/paginados`, { params });
   }
 }
