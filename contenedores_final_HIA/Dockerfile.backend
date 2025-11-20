@@ -26,4 +26,3 @@ EXPOSE 3000
 
 # Usa entrypoint para esperar la DB y luego ejecutar la app
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-
