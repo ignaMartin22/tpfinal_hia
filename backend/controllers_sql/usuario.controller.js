@@ -1,4 +1,5 @@
 const { User } = require('../models_sql');
+const { Op } = require('sequelize');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const sanitizeHtml = require('sanitize-html');
@@ -17,17 +18,19 @@ ctrl.obtenerUsuariosPaginados = async (req, res) => {
     const where = {};
     if (q) {
       where[Op.or] = [
-        { name: { [Op.iLike]: `%${q}%` } },
-        { email: { [Op.iLike]: `%${q}%` } }
+        { username: { [Op.iLike]: `%${q}%` } },
+        { email: { [Op.iLike]: `%${q}%` } },
+        { nombres: { [Op.iLike]: `%${q}%` } },
+        { apellido: { [Op.iLike]: `%${q}%` } }
       ];
     }
 
-    const result = await db.User.findAndCountAll({
+    const result = await User.findAndCountAll({
       where,
       limit: pageSize,
       offset: (page - 1) * pageSize,
       order: [['createdAt', 'DESC']],
-      attributes: ['id', 'name', 'email', 'createdAt']
+      attributes: { exclude: ['password'] }
     });
 
     return res.json({ items: result.rows, total: result.count });
