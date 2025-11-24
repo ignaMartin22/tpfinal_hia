@@ -174,7 +174,7 @@ router.get(
 		#swagger.responses[200] = { description: 'Usuarios obtenidos correctamente' }
 	*/
 	authCtrl.verifyToken,
-	usuarioCtrl.obtenerUsuariosPaginados
+	usuarioCtrl.obtenerUsuariosCursor
 );
 
 router.get(

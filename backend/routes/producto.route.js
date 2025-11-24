@@ -264,7 +264,7 @@ router.get("/paginados",
       }
     }
   */
-  productoCtrl.obtenerProductosPaginados
+  productoCtrl.obtenerProductosCursor
 );
 
 // Obtener productos por categoría
