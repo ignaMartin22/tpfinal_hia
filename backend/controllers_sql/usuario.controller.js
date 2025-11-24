@@ -11,7 +11,7 @@ const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 const ctrl = {};
 ctrl.obtenerUsuariosCursor = async (req, res) => {
   try {
-    const cursor = parseInt(req.query.cursor) || null;
+    const cursor = req.query.cursor || null;
     const limit = Math.min(100, parseInt(req.query.limit) || 25);
     const q = (req.query.q || '').trim();
 
@@ -26,24 +26,24 @@ ctrl.obtenerUsuariosCursor = async (req, res) => {
       ];
     }
 
-    // Si hay cursor, filtramos por ID mayor al cursor
+    // Cursor basado en createdAt
     if (cursor) {
-      where.id = { [Op.gt]: cursor };
+      where.createdAt = { [Op.gt]: new Date(cursor) };
     }
 
     const users = await User.findAll({
       where,
       limit,
-      order: [['id', 'ASC']],
+      order: [['createdAt', 'ASC']],
       attributes: { exclude: ['password'] }
     });
 
-    const lastUser = users.length > 0 ? users[users.length - 1] : null;
+    const last = users.length > 0 ? users[users.length - 1] : null;
 
     return res.json({
       items: users,
-      nextCursor: lastUser ? lastUser.id : null,
-      hasNext: users.length === limit
+      nextCursor: last ? last.createdAt : null,
+      hasNext: users.length === limit,
     });
 
   } catch (err) {
@@ -51,6 +51,8 @@ ctrl.obtenerUsuariosCursor = async (req, res) => {
     return res.status(500).json({ msg: 'Error al obtener usuarios', error: err.message });
   }
 };
+
+
 
 ctrl.createUsuario = async (req, res) => {
   try {

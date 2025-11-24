@@ -44,6 +44,7 @@ export class ProductList implements OnInit {
   cursor: number | null = null;
 
   hoveredIndex: number | null = null;
+  hasNext: any;
 
   constructor(
     private productoService: ProductoService,
@@ -59,8 +60,10 @@ export class ProductList implements OnInit {
         this.selectedCategory = params['categoryName'];
       }
 
-      this.loadProducts();
+      this.loadPageByCursor();
     });
+
+
   }
 
   trackByProduct(product: Producto) {
@@ -90,54 +93,45 @@ export class ProductList implements OnInit {
     this.currentPage = 1;
   }
 
-  loadProducts(page: number = 1) {
-    this.currentPage = page;
 
-    // reset cursor solo si vamos a la primera página
-    if (page === 1) {
-      this.cursor = null;
-    }
 
-    this.loadPageByCursor(page);
-  }
+loadMore() {
+  this.loadPageByCursor();
+}
 
-  private loadPageByCursor(targetPage: number) {
-    let jumps = targetPage - 1;
+ private loadPageByCursor() {
+  this.productoService
+    .obtenerProductosCursor(this.cursor, this.pageSize, this.searchTerm)
+    .subscribe(resp => {
 
-    const fetchNext = () => {
-      this.productoService
-        .obtenerProductosCursor(this.cursor, this.pageSize, this.searchTerm)
-        .subscribe(resp => {
-          this.cursor = resp.nextCursor ?? null;
+      console.log("RESP CURSOR:", resp);
 
-          if (jumps > 0) {
-            jumps--;
-            fetchNext();
-            return;
-          }
+      // Si es la primera página (cursor = null)
+      if (this.cursor === null) {
+        this.products = resp.items;
+      } else {
+        // Si es "ver más" (cursor != null)
+        this.products = [...this.products, ...resp.items];
+      }
 
-          // página objetivo lograda
-          this.products = resp.items;
-          this.allProducts = resp.items;
-          this.totalProducts = resp.total;
-          this.totalPages = Math.ceil(resp.total / this.pageSize);
+      // MATCHEAR always-all-products con paginación por cursor
+      this.allProducts = this.products;
 
-          this.generatePagesArray();
-          this.colors = this.getAllColors();
-          this.categories = this.getAllCategories();
-          this.priceRange.max = Math.max(...this.products.map(p => p.precio), 0);
-        });
-    };
+      // Actualizar cursor
+      this.cursor = resp.nextCursor ?? null;
+      this.hasNext = resp.hasNext;
 
-    fetchNext();
-  }
+      // Recalcular filtros
+      this.colors = this.getAllColors();
+      this.categories = this.getAllCategories();
 
-  onPageChange(page: number) {
-    if (page < 1 || page > this.totalPages) return;
-    this.loadProducts(page);
-  }
+      this.priceRange.max = Math.max(...this.products.map(p => p.precio), 0);
+    });
+}
 
-  private generatePagesArray() {
+
+
+private generatePagesArray() {
     const total = this.totalPages;
     const current = this.currentPage;
     const max = this.maxPagesToShow;
@@ -173,7 +167,7 @@ export class ProductList implements OnInit {
 
   onFilterChange() {
     this.cursor = null; // reinicia el recorrido
-    this.loadProducts(1);
+    this.loadPageByCursor();
   }
 
   setHover(index: number, isHover: boolean) {
@@ -201,6 +195,6 @@ export class ProductList implements OnInit {
     if (this.hoveredIndex === index && product.imagenes?.length > 1) {
       return product.imagenes[1];
     }
-    return product.imagenes[0] || 'assets/images/no-image.jpg';
+    return product?.imagenes?.[0] ?? 'assets/images/no-image.jpg';
   }
 }
