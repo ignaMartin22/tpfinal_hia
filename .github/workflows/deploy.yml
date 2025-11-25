@@ -12,23 +12,26 @@ jobs:
       - name: Checkout del código
         uses: actions/checkout@v3
 
-      # --- PASO DE PREPARACIÓN ROBUSTO ---
-      # Copiamos TODO lo que pueda necesitar el Dockerfile:
-      # 1. entrypoint.sh
-      # 2. Carpeta scripts completa (con carga_masiva.py y demás)
-      # 3. Carpeta config completa (por si acaso usa algo de ahí)
-      - name: Preparar Archivos de Soporte
+      # ======================================================
+      #  PREPARACIÓN DE ARCHIVOS (ESTRATEGIA TOTAL)
+      # ======================================================
+      - name: Mover Archivos de Soporte
         run: |
-          echo "--- Preparando Backend ---"
-          cp contenedores_final_HIA/entrypoint.sh backend/
+          echo "--- 1. Preparando BACKEND ---"
+          # El error anterior decia: not found "scripts/carga_masiva.py"
+          # Por eso copiamos la carpeta 'scripts' directo a la raiz del backend
           cp -r contenedores_final_HIA/scripts backend/
           cp -r contenedores_final_HIA/config backend/
+          cp contenedores_final_HIA/entrypoint.sh backend/
+
+          echo "--- 2. Preparando FRONTEND ---"
+          # El error anterior decia: not found "contenedores_final_HIA/nginx.conf"
+          # Por eso creamos esa carpeta ADENTRO del frontend y copiamos el archivo
+          mkdir -p frontend/contenedores_final_HIA
+          cp contenedores_final_HIA/nginx.conf frontend/contenedores_final_HIA/
           
-          echo "--- Preparando Frontend ---"
-          # Hacemos lo mismo para el frontend por seguridad
-          cp contenedores_final_HIA/entrypoint.sh frontend/ || true
-          # El || true evita que falle si el frontend no necesita scripts, pero intenta copiarlos
-          cp -r contenedores_final_HIA/scripts frontend/ || true
+          # Copiamos todo lo demas dentro de esa carpeta por seguridad
+          cp -r contenedores_final_HIA/* frontend/contenedores_final_HIA/
 
       - name: Login en Docker Hub
         uses: docker/login-action@v2
