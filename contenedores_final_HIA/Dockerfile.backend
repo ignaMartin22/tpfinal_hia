@@ -1,33 +1,33 @@
 FROM node:lts-alpine3.22
 
-# Instalar dependencias del sistema
+# Dependencias del sistema
 RUN apk add --no-cache git netcat-openbsd postgresql-client python3 py3-pip
 
-# Establecer el directorio de trabajo
+# Establecemos el directorio de trabajo
 WORKDIR /usr/src/app
 
-# [CORRECCIÓN CLAVE]
-# Copiamos los archivos LOCALES (tu código) en lugar de clonar de internet
+# [IMPORTANTE] Copiamos los archivos (index.js, package.json) DIRECTAMENTE aquí
+# Como el contexto de GitHub Actions es "./backend", los archivos caen aquí sueltos.
 COPY . .
 
-# Instalar dependencias de la aplicación (Node.js)
+# [CORRECCIÓN] Eliminamos la línea "WORKDIR /usr/src/app/backend"
+# porque ya estamos parados donde están los archivos.
+
+# Instalar dependencias de Node
 RUN npm install
 
-# Instalar dependencias de Python para el script de carga masiva
+# Instalar dependencias de Python
 RUN pip3 install --no-cache-dir --break-system-packages psycopg2-binary faker bcrypt
 
-# Aseguramos que el script de carga masiva esté donde la app lo espera
-# (El workflow ya movió la carpeta scripts adentro del backend, así que esto funciona)
-RUN cp scripts/carga_masiva.py ./carga_masiva.py || echo "Advertencia: script no encontrado en ruta esperada"
-
-# Configuración del Entrypoint
-# (El workflow ya movió entrypoint.sh a la raíz del backend)
+# Configurar el entrypoint
+# (El archivo entrypoint.sh ya se copió con el COPY . .)
 RUN cp entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN sed -i 's/\r$//' /usr/local/bin/entrypoint.sh && chmod +x /usr/local/bin/entrypoint.sh
 
-# Exponemos el puerto 3001 (para coincidir con tu docker-compose)
+# Exponemos puerto 3001
 EXPOSE 3001
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-# Comando por defecto para iniciar la app (ajusta si tu script es server.js o index.js)
-CMD ["npm", "start"]
+
+# [CORRECCIÓN FINAL] Ejecutamos index.js directamente
+CMD ["node", "index.js"]
