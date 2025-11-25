@@ -3,7 +3,7 @@ name: Construir y Publicar en Docker Hub
 on:
   push:
     branches: [ "main" ]
-  workflow_dispatch: # Esto habilita un botón para ejecutarlo manualmente si quieres
+  workflow_dispatch:
 
 jobs:
   build-and-push:
@@ -12,32 +12,38 @@ jobs:
       - name: Checkout del código
         uses: actions/checkout@v3
 
+      # PASO NUEVO: Prepara los archivos necesarios
+      # Copiamos el entrypoint desde contenedores hacia el backend y frontend
+      # para que Docker pueda encontrarlos dentro de su "contexto".
+      - name: Mover Entrypoint y Configs
+        run: |
+          cp contenedores_final_HIA/entrypoint.sh backend/
+          # Si tu frontend también usa entrypoint, descomenta la siguiente línea:
+          # cp contenedores_final_HIA/entrypoint.sh frontend/
+
       - name: Login en Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # --- BACKEND ---
+      # --- CONSTRUCCIÓN DEL BACKEND ---
       - name: Build y Push Backend
         uses: docker/build-push-action@v4
         with:
-          # Contexto: Dónde está el código fuente del back
           context: ./backend
-          # Archivo: Dónde está el Dockerfile del back
           file: ./contenedores_final_HIA/Dockerfile.backend
           push: true
-          # Esto creará: maurotarifa/tpfinal_hia-backend:latest
           tags: ${{ secrets.DOCKER_USERNAME }}/tpfinal_hia-backend:latest
 
-      # --- FRONTEND ---
+      # --- CONSTRUCCIÓN DEL FRONTEND ---
       - name: Build y Push Frontend
         uses: docker/build-push-action@v4
         with:
-          # Contexto: Dónde está el código fuente del front
           context: ./frontend
-          # Archivo: Dónde está el Dockerfile del front
           file: ./contenedores_final_HIA/Dockerfile.frontend
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/tpfinal_hia-frontend:latest
           push: true
           # Esto creará: maurotarifa/tpfinal_hia-frontend:latest
           tags: ${{ secrets.DOCKER_USERNAME }}/tpfinal_hia-frontend:latest
