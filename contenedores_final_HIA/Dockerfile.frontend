@@ -1,0 +1,14 @@
+# Usamos nginx liviano
+FROM nginx:alpine
+
+# Borramos la configuración default y copiamos la nuestra (opcional)
+COPY contenedores_final_HIA/nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copiamos los archivos compilados de Angular
+COPY ./frontend/trabajo_final_frontend/dist/trabajo_final_frontend /usr/share/nginx/html
+
+# Exponemos el puerto donde Nginx servirá la app
+EXPOSE 80
+
+# Comando para correr Nginx en primer plano
+CMD ["nginx", "-g", "daemon off;"]
