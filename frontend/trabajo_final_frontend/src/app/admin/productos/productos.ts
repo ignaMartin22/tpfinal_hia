@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Producto, ProductoService } from '../../services/producto';
 import { ProductoForm } from './producto-form/producto-form';
@@ -6,14 +6,13 @@ import { ToastrService } from 'ngx-toastr';
 import { CategoriaForm } from './categoria-form/categoria-form';
 import { FormControl, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, Subscription, tap } from 'rxjs';
-import Swal from 'sweetalert2';
 
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-productos',
-  standalone: true,
-  imports: [CommonModule, ProductoForm, FormsModule, CategoriaForm, ReactiveFormsModule],
+  imports: [CommonModule, CategoriaForm, ReactiveFormsModule, ProductoForm],
   templateUrl: './productos.html',
-  styleUrls: ['./productos.css']
+  styleUrl: './productos.css'
 })
 export class Productos implements OnInit, OnDestroy {
 
@@ -75,21 +74,45 @@ export class Productos implements OnInit, OnDestroy {
     });
   }
 
-  // --------- CRUD ---------
 
   abrirModal(producto?: Producto): void {
-    this.productoSeleccionado = producto ?? null;
+    if (producto) {
+      this.productoSeleccionado = producto;
+    } else {
+      this.productoSeleccionado = null;
+    }
   }
 
   cerrarModal(): void {
     this.productoSeleccionado = null;
   }
 
+  buscarProductoPorNombre() {
+    this.busquedaControl.setValue(this.productoService.valorBusqueda);
+    this.busquedaControl.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap((valor) => this.productoService.buscarPorNombre(valor ?? ''))
+      )
+      .subscribe((respuesta) => {
+        this.productos = respuesta;
+      })
+  }
   guardarProducto(productoForm: FormData) {
     if (this.productoSeleccionado) {
+
       // actualizar
+
       this.productoService.actualizarProducto(this.productoSeleccionado._id, productoForm).subscribe({
-        next: () => {
+        next: (productoActualizado) => {
+          // Reemplazamos el producto en la lista local
+          const index = this.productos.findIndex(p => p._id === productoActualizado._id);
+          if (index !== -1) {
+            this.productos[index] = productoActualizado;
+            this.productos = [...this.productos]; // Forzar refresco
+
+          }
           this.toastr.success('Producto actualizado con éxito');
           this.cerrarModal();
           this.resetAndLoad();
@@ -97,12 +120,14 @@ export class Productos implements OnInit, OnDestroy {
         error: (err) => {
           this.toastr.error(err?.error?.msg ?? 'Error al actualizar');
         }
+      }
       });
 
     } else {
       // crear
       this.productoService.crearProducto(productoForm).subscribe({
-        next: () => {
+        next: (productoCreado) => {
+          this.productos.push(productoCreado); // Añadimos sin recargar todo
           this.toastr.success('Producto creado con éxito');
           this.cerrarModal();
           this.resetAndLoad();
@@ -110,6 +135,7 @@ export class Productos implements OnInit, OnDestroy {
         error: (err) => {
           this.toastr.error(err?.error?.msg ?? 'Error al crear');
         }
+      }
       });
     }
   }

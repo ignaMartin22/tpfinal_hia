@@ -29,10 +29,6 @@ export interface ProductoResponse {
   msg: string;
   productos: Producto[];
 }
-export interface PaginacionRespuesta {
-  items: Producto[];
-  total: number;
-}
 
 @Injectable({
   providedIn: 'root'
