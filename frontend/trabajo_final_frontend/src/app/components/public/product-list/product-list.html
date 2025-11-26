@@ -3,9 +3,9 @@
     <div class="page-header">
       <h1 class="page-title">
         @if (selectedCategory) {
-          {{selectedCategory | titlecase}}
+        {{selectedCategory | titlecase}}
         } @else {
-          Todos los productos
+        Todos los productos
         }
       </h1>
     </div>
@@ -17,14 +17,14 @@
     <div class="col-lg-5 col-md-4 mb-2 mb-md-0">
       <div class="input-group">
         <span class="input-group-text bg-transparent border-0 border-bottom rounded-0">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search"
+            viewBox="0 0 16 16">
+            <path
+              d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
           </svg>
         </span>
-        <input type="text" class="form-control border-0 border-bottom rounded-0"
-               placeholder="Buscar productos..."
-               [(ngModel)]="searchTerm"
-               (input)="onFilterChange()">
+        <input type="text" class="form-control border-0 border-bottom rounded-0" placeholder="Buscar productos..."
+          [(ngModel)]="searchTerm" (input)="onFilterChange()">
       </div>
     </div>
 
@@ -38,8 +38,7 @@
     <div class="col-lg-4 col-md-4 d-none d-md-block">
       <div class="d-flex align-items-center justify-content-end">
         <span>Ordenar por:</span>
-        <select class="form-select border-0 rounded-0 sort-select"
-                (change)="onSortChange($event)">
+        <select class="form-select border-0 rounded-0 sort-select" (change)="onSortChange($event)">
           <option value="name">Nombre A-Z</option>
           <option value="price-low">Precio: Menor a mayor</option>
           <option value="price-high">Precio: Mayor a menor</option>
@@ -55,8 +54,10 @@
     <div class="row w-100">
       <div class="col-6">
         <button class="btn btn-outline-primary w-100" (click)="openFilterModal()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16">
-            <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2z"/>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel"
+            viewBox="0 0 16 16">
+            <path
+              d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2z" />
           </svg> Filtros
         </button>
       </div>
@@ -77,53 +78,41 @@
         <app-accordion color="#00bcd4">
           <ng-template accordionItem title="Color">
             @for (color of colors; track color) {
-              <div class="form-check mb-2">
-                <input class="form-check-input"
-                       type="checkbox"
-                       [value]="color"
-                       [(ngModel)]="selectedColors[color]"
-                       (change)="onFilterChange()"
-                       [id]="'color-' + color">
-                <label class="form-check-label" [for]="'color-' + color">
-                  {{ color | titlecase }}
-                </label>
-              </div>
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="checkbox" [value]="color" [(ngModel)]="selectedColors[color]"
+                (change)="onFilterChange()" [id]="'color-' + color">
+              <label class="form-check-label" [for]="'color-' + color">
+                {{ color | titlecase }}
+              </label>
+            </div>
             }
           </ng-template>
           <ng-template accordionItem title="Precio">
             <div class="d-flex align-items-center gap-2">
-              <input type="number" class="form-control" placeholder="Mín" [(ngModel)]="priceRange.min" (change)="onFilterChange()" min="0">
+              <input type="number" class="form-control" placeholder="Mín" [(ngModel)]="priceRange.min"
+                (change)="onFilterChange()" min="0">
               <span>-</span>
-              <input type="number" class="form-control" placeholder="Máx" [(ngModel)]="priceRange.max" (change)="onFilterChange()" min="0">
+              <input type="number" class="form-control" placeholder="Máx" [(ngModel)]="priceRange.max"
+                (change)="onFilterChange()" min="0">
             </div>
           </ng-template>
           <ng-template accordionItem title="Categoría" [expanded]="true">
             <div class="category-list">
               <div class="form-check mb-2">
-                <input class="form-check-input"
-                       type="radio"
-                       name="category"
-                       id="category-todas"
-                       value=""
-                       [(ngModel)]="selectedCategory"
-                       (change)="onFilterChange()">
+                <input class="form-check-input" type="radio" name="category" id="category-todas" value=""
+                  [(ngModel)]="selectedCategory" (change)="onFilterChange()">
                 <label class="form-check-label" for="category-todas">
                   Todas
                 </label>
               </div>
               @for (category of categories; track category) {
-                <div class="form-check mb-2">
-                  <input class="form-check-input"
-                         type="radio"
-                         name="category"
-                         [id]="'category-' + category"
-                         [value]="category"
-                         [(ngModel)]="selectedCategory"
-                         (change)="onFilterChange()">
-                  <label class="form-check-label" [for]="'category-' + category">
-                    {{ category | titlecase }}
-                  </label>
-                </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="category" [id]="'category-' + category"
+                  [value]="category" [(ngModel)]="selectedCategory" (change)="onFilterChange()">
+                <label class="form-check-label" [for]="'category-' + category">
+                  {{ category | titlecase }}
+                </label>
+              </div>
               }
             </div>
           </ng-template>
@@ -144,31 +133,29 @@
               <app-accordion color="#00bcd4">
                 <ng-template accordionItem title="Color">
                   @for (color of colors; track color) {
-                    <div class="form-check mb-2">
-                      <input class="form-check-input"
-                             type="checkbox"
-                             [value]="color"
-                             [(ngModel)]="selectedColors[color]"
-                             (change)="onFilterChange()"
-                             [id]="'mobile-color-' + color">
-                      <label class="form-check-label" [for]="'mobile-color-' + color">
-                        {{ color | titlecase }}
-                      </label>
-                    </div>
+                  <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" [value]="color" [(ngModel)]="selectedColors[color]"
+                      (change)="onFilterChange()" [id]="'mobile-color-' + color">
+                    <label class="form-check-label" [for]="'mobile-color-' + color">
+                      {{ color | titlecase }}
+                    </label>
+                  </div>
                   }
                 </ng-template>
                 <ng-template accordionItem title="Precio">
                   <div class="d-flex align-items-center gap-2">
-                    <input type="number" class="form-control" placeholder="Mín" [(ngModel)]="priceRange.min" (change)="onFilterChange()" min="0">
+                    <input type="number" class="form-control" placeholder="Mín" [(ngModel)]="priceRange.min"
+                      (change)="onFilterChange()" min="0">
                     <span>-</span>
-                    <input type="number" class="form-control" placeholder="Máx" [(ngModel)]="priceRange.max" (change)="onFilterChange()" min="0">
+                    <input type="number" class="form-control" placeholder="Máx" [(ngModel)]="priceRange.max"
+                      (change)="onFilterChange()" min="0">
                   </div>
                 </ng-template>
                 <ng-template accordionItem title="Categoría">
                   <select class="form-select" [(ngModel)]="selectedCategory" (change)="onFilterChange()">
                     <option value="">Todas</option>
                     @for (category of categories; track category) {
-                      <option [value]="category">{{ category | titlecase }}</option>
+                    <option [value]="category">{{ category | titlecase }}</option>
                     }
                   </select>
                 </ng-template>
@@ -178,67 +165,62 @@
         </div>
       </div>
     </div>
-<!-- Grid de productos -->
-<div class="col-md-9">
-  <div class="row">
-    @for (product of products ; let i = $index; track trackByProduct(product)) {
-      <div class="col-12 col-sm-6 col-md-4 mb-4">
-        <div class="card text-center h-100 product-card"
-             (mouseenter)="setHover(i, true)"
-             (mouseleave)="setHover(i, false)"
-             (click)="product?._id && goToProductDetail(product._id)"
-             style="cursor: pointer;">
-          <div class="product-image-container">
-            
-            <!-- Imagen segura -->
-            <img [src]="getProductImage(product, i)"
-                 class="card-img-top product-image"
-                 [alt]="product?.nombre || 'Producto'">
-          </div>
+    <!-- Grid de productos -->
+    <div class="col-md-9">
+      <div class="row">
+        @for (product of products ; let i = $index; track trackByProduct(product)) {
+        <div class="col-12 col-sm-6 col-md-4 mb-4">
+          <div class="card text-center h-100 product-card" (mouseenter)="setHover(i, true)"
+            (mouseleave)="setHover(i, false)" (click)="product?._id && goToProductDetail(product._id)"
+            style="cursor: pointer;">
+            <div class="product-image-container">
 
-          <div class="card-body d-flex flex-column justify-content-center position-relative">
-            <div class="product-content" [class.opacity-0]="hoveredIndex === i">
-              <h5 class="card-title product-name">{{ product?.nombre }}</h5>
-              <p class="card-text product-price">
-                ${{ product?.precio ?? '—' }}
-              </p>
+              <!-- Imagen segura -->
+              <img [src]="'assets/home/buzo-blanco-espalda.webp'" class="card-img-top product-image"
+                [alt]="product?.nombre || 'Producto'" />
+
             </div>
 
-            <!-- Hover: talles -->
-            <div class="product-hover position-absolute top-50 start-50 translate-middle w-100"
-                 [class.opacity-0]="hoveredIndex !== i">
-
-              <div *ngIf="(product?.tallas ?? []).length > 0; else noTalles">
-                <span *ngFor="let talla of (product?.tallas ?? []); let last = last">
-                  {{ talla?.talla }}
-                  <span *ngIf="!last">, </span>
-                </span>
+            <div class="card-body d-flex flex-column justify-content-center position-relative">
+              <div class="product-content" [class.opacity-0]="hoveredIndex === i">
+                <h5 class="card-title product-name">{{ product?.nombre }}</h5>
+                <p class="card-text product-price">
+                  ${{ product?.precio ?? '—' }}
+                </p>
               </div>
 
-              <ng-template #noTalles>
-                <span class="text-muted">Sin talles</span>
-              </ng-template>
-            </div>
+              <!-- Hover: talles -->
+              <div class="product-hover position-absolute top-50 start-50 translate-middle w-100"
+                [class.opacity-0]="hoveredIndex !== i">
 
+                <div *ngIf="(product?.tallas ?? []).length > 0; else noTalles">
+                  <span *ngFor="let talla of (product?.tallas ?? []); let last = last">
+                    {{ talla?.talla }}
+                    <span *ngIf="!last">, </span>
+                  </span>
+                </div>
+
+                <ng-template #noTalles>
+                  <span class="text-muted">Sin talles</span>
+                </ng-template>
+              </div>
+
+            </div>
           </div>
         </div>
+        } @empty {
+        <div class="col-12 text-center">
+          <p>No se encontraron productos.</p>
+        </div>
+        }
       </div>
-    } @empty {
-      <div class="col-12 text-center">
-        <p>No se encontraron productos.</p>
-      </div>
-    }
-  </div>
 
-<div class="text-center mt-4">
-  <button 
-    class="btn btn-primary"
-    [disabled]="!hasNext"
-    (click)="loadMore()">
-    {{ hasNext ? 'Cargar más' : 'No hay más productos' }}
-  </button>
-</div>
-</div>
+      <div class="text-center mt-4">
+        <button class="btn btn-primary" [disabled]="!hasNext" (click)="loadMore()">
+          {{ hasNext ? 'Cargar más' : 'No hay más productos' }}
+        </button>
+      </div>
+    </div>
 
   </div>
 </div>
