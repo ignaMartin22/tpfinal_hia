@@ -1,9 +1,11 @@
 #!/bin/bash
 
-LOG_FILE="/var/log/nginx/access.log"
+# [CAMBIO] Apuntamos al archivo físico nuevo
+LOG_FILE="/var/log/nginx/ddos_file.log"
 BLOCK_FILE="/etc/nginx/conf.d/blocked_ips.conf"
 
-echo "  Iniciando Guardian Anti-DDoS..."
+echo "🛡️  Iniciando Guardián Anti-DDoS..."
+echo "👀  Vigilando el log físico: $LOG_FILE"
 
 # Monitorear el log en tiempo real
 tail -n 0 -F "$LOG_FILE" | while read line; do
