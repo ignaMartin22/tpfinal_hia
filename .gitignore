@@ -3,3 +3,6 @@ uploads/
 .env
 pgdata/
 *.log
+contenedores_final_HIA/certs/*.key
+contenedores_final_HIA/certs/*.pem
+
