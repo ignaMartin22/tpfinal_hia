@@ -1,10 +1,10 @@
 {
-  "timestamp": "20251127T222025Z",
+  "timestamp": "20251127T225954Z",
   "best": {
     "shared_buffers": "512MB",
     "work_mem": "4MB",
     "max_connections": 89,
-    "tps": 433.399815
+    "tps": 398.546208
   },
   "all": [
     {
@@ -13,15 +13,15 @@
         "4MB",
         89
       ],
-      "tps": 433.399815,
+      "tps": 398.546208,
       "leader": "postgres-master",
       "lag_ok": true,
       "lag_details": {
         "postgres-replica1": {
-          "lag_seconds": 0.477698
+          "lag_seconds": 0.697509
         },
         "postgres-replica2": {
-          "lag_seconds": 0.825764
+          "lag_seconds": 0.950437
         }
       },
       "rollback": false,
@@ -34,15 +34,15 @@
         "8MB",
         55
       ],
-      "tps": 247.45623,
+      "tps": 394.141245,
       "leader": "postgres-master",
       "lag_ok": true,
       "lag_details": {
         "postgres-replica1": {
-          "lag_seconds": 0.502328
+          "lag_seconds": 0.356898
         },
         "postgres-replica2": {
-          "lag_seconds": 0.786102
+          "lag_seconds": 0.562748
         }
       },
       "rollback": false,
@@ -55,15 +55,15 @@
         "8MB",
         57
       ],
-      "tps": 145.329175,
+      "tps": 169.481077,
       "leader": "postgres-master",
       "lag_ok": true,
       "lag_details": {
         "postgres-replica1": {
-          "lag_seconds": 0.382174
+          "lag_seconds": 0.415147
         },
         "postgres-replica2": {
-          "lag_seconds": 0.584324
+          "lag_seconds": 0.590166
         }
       },
       "rollback": false,
@@ -76,15 +76,15 @@
         "4MB",
         86
       ],
-      "tps": 165.676039,
+      "tps": 224.213208,
       "leader": "postgres-master",
       "lag_ok": true,
       "lag_details": {
         "postgres-replica1": {
-          "lag_seconds": 0.437737
+          "lag_seconds": 0.338224
         },
         "postgres-replica2": {
-          "lag_seconds": 0.811393
+          "lag_seconds": 0.537396
         }
       },
       "rollback": false,
@@ -92,6 +92,6 @@
       "backup_path": null
     }
   ],
-  "baseline_tps": 414.303176,
+  "baseline_tps": 473.834789,
   "last_backup_path": null
 }
